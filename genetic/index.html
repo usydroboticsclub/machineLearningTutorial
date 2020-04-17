@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <script src="scripts/box2d_min.js"></script>
+    <script src="scripts/embox2d-helpers.js"></script>
+    <script src="scripts/controller.js"></script>
+    <script src="scripts/physicsEngine.js"></script>
+    <script src="scripts/geneticProgramming.js"></script>
+    <script src="scripts/engine.js"></script>
+</head>
+
+<body>
+    <canvas>
+
+    </canvas>
+    <h1>Generation <span class="gc"></span>, no. <span class="rn"></span></h1>
+    <br>
+    <div class="genLog">
+
+    </div>
+    <div class="fullLog">
+
+    </div>
+    <script>
+
+        let rendering = true;
+
+        var controllerManager = new _controllerManager();
+        var engine = new engine(controllerManager, rendering);
+
+        var controllerPopulation = [];
+        var populationSize = 10;
+        var generationCount = 20000000;
+
+        for (let i = 0; i < populationSize; i++) {
+            controllerPopulation.push(controllerManager.createNewController());
+        }
+
+        let replication = 1;
+        let mutation = 1;
+        let crossover = 0.5;
+        async function runGeneticAlgorithm() {
+            let scoredPopulation = [];
+            for (let i = 0; i < generationCount; i++) {
+                scoredPopulation = [];
+                document.querySelector(".gc").innerText = i;
+                for (let j = 0; j < controllerPopulation.length; j++) {
+                    document.querySelector(".rn").innerText = j;
+                    let currentScore = await engine.evaluateController(controllerPopulation[j]);
+                    currentScore = Math.max(currentScore, 0);
+                    let p = document.createElement("p");
+                    p.innerHTML = `${getSignature(controllerPopulation[j])} SCORE: ${currentScore}; controller structure: ${controllerManager.printFullController(controllerPopulation[j])}`;
+                    document.querySelector("div.fullLog").appendChild(p);
+                    scoredPopulation.push([controllerPopulation[j], currentScore]);
+                }
+                // scoredPopulation is now a sorted list of the population and their respective scoredPopulation
+                scoredPopulation.sort((a, b) => b[1] - a[1]);
+
+                let p = document.createElement("p");
+                let gss = 0;
+                let codeCount={};
+                let totalGenes=0;
+                for (let i=0;i<controllerPopulation.length;i++){
+                    for (let c=0;c<4;c++){
+                        let codes=getSwappableIDs(controllerPopulation[i][c],[]);
+                        codes.forEach(i=>{
+                            if (!codeCount[i])codeCount[i]=1;
+                            else codeCount[i]+=2;
+                            totalGenes++;
+                        });
+                    }
+                }
+                codeCount=Object.values(codeCount).reduce((p,i)=>p+i,0);
+                p.innerHTML = `generation ${i} average: ${scoredPopulation.reduce((p,i)=>p+i[1],0)/scoredPopulation.length} <br>
+                max: ${scoredPopulation.reduce((p,i)=>p>i[1]?p:i[1],0)} <br>
+                min ${scoredPopulation.reduce((p,i)=>p<i[1]?p:i[1],scoredPopulation[0][1])}; <br> 
+                genomic similarity score: ${(codeCount-totalGenes)/totalGenes} of ${totalGenes} total genes; <br>
+                genetic signature: ${controllerPopulation.map(i=>getSignature(i)).join(":::")}
+                `;
+                document.querySelector("div.genLog").appendChild(p);
+
+                controllerPopulation = geneticProgrammingMutate(scoredPopulation, replication, crossover, mutation, 1); //keep 1 elite
+                mutation *= 0.9999999;
+                crossover *= 1.0000001;
+
+
+            }
+            // Finally, we have our population!
+            best = scoredPopulation[0][0];
+            await engine.evaluateController(best);
+        }
+        runGeneticAlgorithm();
+    </script>
+
+</body>
+
+</html>
