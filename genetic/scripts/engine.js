@@ -2,7 +2,7 @@ function engine(controllerManager, visualisation=true) {
     //Instantiate the system
     this.physicsEngine = new physicsEngine(visualisation);
     let phySteps = 500;
-
+    KOTimerMax=20;
     this.evaluateOneTimestep = (controller, steps, resolve) => {
         if (steps == phySteps) resolve();
         else {
@@ -17,7 +17,7 @@ function engine(controllerManager, visualisation=true) {
                     dt: this.physicsEngine.bodies[i].GetAngularVelocity()
                 }
             }
-            params['bodyHeight'] = 20;
+            params['bodyHeight'] = 10;
             params['time'] = steps;
             let controlInputs = controller.map(i => controllerManager.evaluateController(i, params));
             //apply the control inputs
@@ -30,8 +30,11 @@ function engine(controllerManager, visualisation=true) {
             //calculate the score
             let pos=this.physicsEngine.bodies[4].GetPosition();
             pos={x:pos.get_x(),y:pos.get_y()};
-            if (pos.y > 15 && pos.x>40) this.currentScore += (pos.x-40)*pos.y;
-            setTimeout(() => { this.evaluateOneTimestep(controller, steps + 1, resolve) });
+            if (pos.y > 5 && pos.x>40) this.currentScore += (pos.x-40)*pos.y;
+            else if (pos.y<-5)this.KOtimer--;
+            console.log(this.KOtimer);
+            if (this.KOtimer<=0)resolve();
+            else setTimeout(() => { this.evaluateOneTimestep(controller, steps + 1, resolve) });
         }
     }
 
@@ -39,7 +42,8 @@ function engine(controllerManager, visualisation=true) {
         this.physicsEngine.resetSystem();
         // A controller consists of 4 different control outputs.
         this.currentScore = 0;
-
+        this.KOtimer=KOTimerMax;
+        console.log(this.KOtimer);
         //instead of using a for loop, we will use setTimeout to update our game, so that we can see what is going on. 
         let simulate = async () => {
             return new Promise(res => {

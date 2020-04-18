@@ -29,7 +29,7 @@
         var engine = new engine(controllerManager, rendering);
 
         var controllerPopulation = [];
-        var populationSize = 10;
+        var populationSize = 100;
         var generationCount = 20000000;
 
         for (let i = 0; i < populationSize; i++) {
@@ -48,9 +48,9 @@
                     document.querySelector(".rn").innerText = j;
                     let currentScore = await engine.evaluateController(controllerPopulation[j]);
                     currentScore = Math.max(currentScore, 0);
-                    let p = document.createElement("p");
+                    /*let p = document.createElement("p");
                     p.innerHTML = `${getSignature(controllerPopulation[j])} SCORE: ${currentScore}; controller structure: ${controllerManager.printFullController(controllerPopulation[j])}`;
-                    document.querySelector("div.fullLog").appendChild(p);
+                    document.querySelector("div.fullLog").appendChild(p);*/
                     scoredPopulation.push([controllerPopulation[j], currentScore]);
                 }
                 // scoredPopulation is now a sorted list of the population and their respective scoredPopulation
@@ -79,7 +79,7 @@
                 `;
                 document.querySelector("div.genLog").appendChild(p);
 
-                controllerPopulation = geneticProgrammingMutate(scoredPopulation, replication, crossover, mutation, 1); //keep 1 elite
+                controllerPopulation = geneticProgrammingMutate(scoredPopulation, replication, crossover, mutation, 10); //keep 10 elite
                 mutation *= 0.9999999;
                 crossover *= 1.0000001;
 

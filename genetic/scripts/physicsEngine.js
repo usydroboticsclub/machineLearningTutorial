@@ -53,11 +53,11 @@ function physicsEngine(visualisation) {
     fixtureDef.get_filter().set_maskBits(0x10);
     fixtureDef.set_shape(polygonShape);
     let basePositions = [
-        new Box2D.b2Vec2(40, 0),
-        new Box2D.b2Vec2(40, 0),
-        new Box2D.b2Vec2(42, 12),
-        new Box2D.b2Vec2(42, 12),
-        new Box2D.b2Vec2(47, 24),
+        new Box2D.b2Vec2(40, 10),
+        new Box2D.b2Vec2(40, 10),
+        new Box2D.b2Vec2(42, 22),
+        new Box2D.b2Vec2(42, 22),
+        new Box2D.b2Vec2(47, 34),
     ]
     this.bodies = [];
     for (let i = 0; i < 5; i++) {
@@ -179,11 +179,11 @@ function physicsEngine(visualisation) {
                 let cy = b.GetPosition().get_y() + 20;
                 let angle = b.GetAngle();
                 ctx.beginPath();
-                let xx = [10, 10, 0, 0];
-                let yy = [0, 5, 5, 0];
+                let xx = [5, 5, -5, -5];
+                let yy = [-2.5, 2.5, 2.5, -2.5];
                 if (i > 4) {
-                    xx = [7, 7, 0, 0];
-                    yy = [2, 2, 0, 0];
+                    xx = [3.5, 3.5, -3.5, -3.5];
+                    yy = [1, -1, -1, 1];
                 }
                 ctx.moveTo(cx + xx[3] * Math.cos(angle) - yy[3] * Math.sin(angle), 500 - (cy + xx[3] * Math.sin(angle) + yy[3] * Math.cos(angle)));
                 for (let i = 0; i < 4; i++) {
@@ -192,9 +192,23 @@ function physicsEngine(visualisation) {
                 ctx.stroke();
                 ctx.closePath();
             }
+            //scoring height
             ctx.beginPath();
             ctx.moveTo(0,500-15);
             ctx.lineTo(500,500-15);
+            ctx.closePath();
+            ctx.stroke();
+
+            //KO height
+            ctx.beginPath();
+            ctx.moveTo(0,500-25);
+            ctx.lineTo(500,500-25);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(60,0);
+            ctx.lineTo(60,500);
             ctx.closePath();
             ctx.stroke();
         }

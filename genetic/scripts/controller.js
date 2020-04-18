@@ -53,6 +53,12 @@ function _controllerManager() {
     nonTerminalOps['sin'] = {
         f: (a) => Math.sin(a)
     };
+    nonTerminalOps['>'] = {
+        f: (a,b) => (a>b)?1:0
+    };
+    nonTerminalOps['<'] = {
+        f: (a,b) => (a<b)?1:0
+    };
     /*nonTerminalOps['tan'] = {
         f: (a) => Math.tan(a)
     };*/
@@ -101,7 +107,15 @@ function _controllerManager() {
     }
 
     this.printController = (controller) => {
-        return controller.type + "(" + (controller.op0 ? this.printController(controller.op0) : "") + (controller.op1 ? "," + this.printController(controller.op1) : "") + ")";
+        if (controller.op1){
+            return "(" + this.printController(controller.op0) +controller.type + this.printController(controller.op1) + ")";
+        }else if (controller.op0){
+            return controller.type + "(" + this.printController(controller.op0) + ")";
+        }else{
+            return controller.type;
+        }
+
+        return 
     }
 
     this.printFullController = (controller) => {
