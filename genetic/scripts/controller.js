@@ -27,7 +27,7 @@ function _controllerManager() {
     };
     //Add the parameter retrievals
     let params = ['x', 'y', 'dx', 'dy', 't', 'dt'];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         let ii = i;
         for (let q = 0; q < params.length; q++) {
             let qq = params[q];
@@ -94,8 +94,8 @@ function _controllerManager() {
 
     this.createNewController = () => {
         let controller = [];
-        for (let i = 0; i < 4; i++) {
-            let root = { type: 'baseOperator', uid: guid(), tf: 0 };
+        for (let i = 0; i < 5; i++) {
+            let root = { type: 'baseOperator', uid: "muscle"+i, tf: 0 };
             this.createController(root, 0);
             controller.push(root);
         }

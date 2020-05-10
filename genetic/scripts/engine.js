@@ -1,8 +1,8 @@
-function engine(controllerManager, visualisation=true) {
+function engine(controllerManager, visualisation = true) {
     //Instantiate the system
     this.physicsEngine = new physicsEngine(visualisation);
-    let phySteps = 500;
-    KOTimerMax=20;
+    let phySteps = 250;
+    KOTimerMax = 50;
     this.evaluateOneTimestep = (controller, steps, resolve) => {
         if (steps == phySteps) resolve();
         else {
@@ -22,18 +22,25 @@ function engine(controllerManager, visualisation=true) {
             let controlInputs = controller.map(i => controllerManager.evaluateController(i, params));
             //apply the control inputs
             for (let i = 0; i < controlInputs.length; i++) {
-                let toApply=Math.max(Math.min(controlInputs[i],100),-100)*300;
+                let toApply = Math.max(Math.min(controlInputs[i], 100), -100) * 300;
                 this.physicsEngine.bodies[i].ApplyTorque(toApply);
             }
             this.physicsEngine.step();
 
             //calculate the score
-            let pos=this.physicsEngine.bodies[4].GetPosition();
-            pos={x:pos.get_x(),y:pos.get_y()};
-            if (pos.y > 5 && pos.x>40) this.currentScore += (pos.x-40)*pos.y;
-            else if (pos.y<-5)this.KOtimer--;
-            console.log(this.KOtimer);
-            if (this.KOtimer<=0)resolve();
+            let pos = this.physicsEngine.bodies[4].GetPosition();
+            pos = { x: pos.get_x(), y: pos.get_y() };
+            //if (pos.y > 5 && pos.x>40) this.currentScore += (pos.x-40)*pos.y;
+            //else if (pos.y<-5)this.KOtimer--;
+            document.querySelector(".t").innerHTML = steps;
+            if (pos.x-this.maxX < 0.01 && steps > 10) {
+                this.KOtimer--;
+            }else {
+                this.KOtimer = KOTimerMax;
+            }
+            if (pos.y>10)this.currentScore = pos.x;
+            if (pos.x>this.maxX)this.maxX=pos.x;
+            if (this.KOtimer <= 0) resolve();
             else setTimeout(() => { this.evaluateOneTimestep(controller, steps + 1, resolve) });
         }
     }
@@ -42,7 +49,8 @@ function engine(controllerManager, visualisation=true) {
         this.physicsEngine.resetSystem();
         // A controller consists of 4 different control outputs.
         this.currentScore = 0;
-        this.KOtimer=KOTimerMax;
+        this.KOtimer = KOTimerMax;
+        this.maxX=0;
         console.log(this.KOtimer);
         //instead of using a for loop, we will use setTimeout to update our game, so that we can see what is going on. 
         let simulate = async () => {
