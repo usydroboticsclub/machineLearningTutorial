@@ -219,8 +219,11 @@ Terminal state confidence: 100%
 Looks ok. There's just one thing that's making me feel annoyed at this point: The last game, according to the record, was this:
 
 2|0|0|0
+
 2|0|0|0
+
 2|0|0|0
+
 1|1|1|1
 
 WHY? 
@@ -233,11 +236,17 @@ Terminal state confidence: 88%
 Last game:
 
 0|0|0|0|0|0
+
 0|0|0|0|0|0
+
 0|0|0|0|0|0
+
 2|0|0|0|0|0
+
 2|0|0|0|0|0
+
 2|0|0|0|0|0
+
 2|1|0|1|1|1
 
 Ah, the irony. Interestingly though, the win/loss rate is similar if not better than the 4x4!
